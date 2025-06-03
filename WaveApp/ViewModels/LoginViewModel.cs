@@ -32,7 +32,7 @@ namespace WaveApp.ViewModels
             }
             else
             {
-                ErrorMessage = "Usuario o contraseña incorrectos.";
+                ErrorMessage = "Incorrect username or password";
                 HasError = true;
             }
         }
@@ -45,7 +45,7 @@ namespace WaveApp.ViewModels
             }
             else
             {
-                // Handle the null case, e.g., log an error or show a message
+                
             }
         }
     }

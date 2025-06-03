@@ -10,5 +10,11 @@
             // Authentication simulation
             return Task.FromResult(username == demoUser && password == demoPass);
         }
+
+        public static async Task<bool> RegisterAsync(string username, string email, string password)
+        {
+            await Task.Delay(1000);
+            return true; 
+        }
     }
 }
