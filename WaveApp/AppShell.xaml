@@ -18,6 +18,9 @@
     <FlyoutItem Title="Map" Icon="map.png">
         <ShellContent ContentTemplate="{DataTemplate views:MapPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="OpenSeaMap" Icon="map.png">
+        <ShellContent ContentTemplate="{DataTemplate views:OpenSeaMap}" />
+    </FlyoutItem>
     <MenuItem Text="Log Out" Clicked="OnLogoutClicked" IconImageSource="logout.png"/>
     <ShellContent Route="RegisterPage" ContentTemplate="{DataTemplate local:RegisterPage}" />
 </Shell>
