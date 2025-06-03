@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="WaveApp.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:WaveApp.ViewModels"
+    Title="Login">
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout Padding="30" Spacing="20">
+        <Entry Placeholder="Username or Email" Text="{Binding Username}" />
+        <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+        <Button Text="Login" Command="{Binding LoginCommand}" />
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+        <Button Text="Register" Command="{Binding RegisterCommand}" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,29 @@
+<ContentPage
+    x:Class="WaveApp.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:WaveApp.ViewModels"
+    Title="Dashboard">
+    <ContentPage.BindingContext>
+        <vm:DashboardViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <!-- Climate -->
+            <Frame>
+                <HorizontalStackLayout>
+                    <Image Source="{Binding WeatherIcon}" WidthRequest="48" HeightRequest="48"/>
+                    <VerticalStackLayout>
+                        <Label Text="{Binding WeatherDescription}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Temperature}" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
+            <!-- Ask OpenAI -->
+            <Editor Placeholder="Write your question about smart buoys..." Text="{Binding UserQuestion}" AutoSize="TextChanges"/>
+            <Button Text="Ask" Command="{Binding AskOpenAICommand}" IsEnabled="{Binding IsNotBusy}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Label Text="{Binding OpenAIResponse}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
