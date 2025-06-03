@@ -6,7 +6,7 @@ namespace WaveApp.Views;
 
 public partial class MapPage : ContentPage
 {
-    private const string GoogleMapsApiKey = "AIzaSyAacwYQIUQcVuNpiwASKZfyuQfylunb72k";
+    private const string GoogleMapsApiKey = "";
     private readonly MapViewModel _viewModel;
 
     public MapPage()
