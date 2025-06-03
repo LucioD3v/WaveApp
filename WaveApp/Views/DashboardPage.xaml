@@ -1,4 +1,4 @@
-<ContentPage
+﻿<ContentPage
     x:Class="WaveApp.Views.DashboardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -8,17 +8,30 @@
         <vm:DashboardViewModel />
     </ContentPage.BindingContext>
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
-            <!-- Climate -->
-            <Frame>
-                <HorizontalStackLayout>
-                    <Image Source="{Binding WeatherIcon}" WidthRequest="48" HeightRequest="48"/>
-                    <VerticalStackLayout>
-                        <Label Text="{Binding WeatherDescription}" FontAttributes="Bold"/>
-                        <Label Text="{Binding Temperature}" />
-                    </VerticalStackLayout>
-                </HorizontalStackLayout>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Frame para el clima -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15" BackgroundColor="Transparent">
+                <Grid>
+                    <!-- Información del clima -->
+                    <HorizontalStackLayout>
+                        <Image Source="{Binding WeatherIcon}" WidthRequest="48" HeightRequest="48" />
+                        <VerticalStackLayout>
+                            <Label Text="{Binding WeatherDescription}" FontAttributes="Bold" />
+                            <Label Text="{Binding Temperature}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- Ícono de información -->
+                    <ImageButton Source="info_icon.png"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"
+                       WidthRequest="24"
+                       HeightRequest="24"
+                       BackgroundColor="Transparent"
+                       Clicked="OnInfoIconClicked" />
+                </Grid>
             </Frame>
+
             <!-- Ask OpenAI -->
             <Editor Placeholder="Write your question about smart buoys..." Text="{Binding UserQuestion}" AutoSize="TextChanges"/>
             <Button Text="Ask" Command="{Binding AskOpenAICommand}" IsEnabled="{Binding IsNotBusy}" />
