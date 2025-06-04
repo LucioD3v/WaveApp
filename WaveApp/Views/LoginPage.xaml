@@ -57,7 +57,7 @@
 
         <!-- Footer Section -->
         <Label Grid.Row="2"
-               Text="© 2023 WaveApp"
+               Text="© 2025 WaveApp"
                FontSize="12"
                HorizontalOptions="Center"
                VerticalOptions="End"
