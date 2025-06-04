@@ -12,6 +12,8 @@ namespace WaveApp.ViewModels
         [ObservableProperty] private string userQuestion;
         [ObservableProperty] private string openAIResponse;
         [ObservableProperty] private bool isBusy;
+        [ObservableProperty] private bool hasError;
+        [ObservableProperty] private string errorMessage;
 
         public IRelayCommand AskOpenAICommand { get; }
 
@@ -31,11 +33,32 @@ namespace WaveApp.ViewModels
 
         private async Task AskOpenAIAsync()
         {
-            if (string.IsNullOrWhiteSpace(UserQuestion)) return;
+            HasError = false;
+
+            if (string.IsNullOrWhiteSpace(UserQuestion))
+            {
+                OpenAIResponse = string.Empty;
+                HasError = true;
+                ErrorMessage = "Please enter a question before asking.";
+                return;
+            }
+
             IsBusy = true;
             OpenAIResponse = string.Empty;
-            OpenAIResponse = await OpenAIService.AskAsync(UserQuestion);
-            IsBusy = false;
+
+            try
+            {
+                OpenAIResponse = await OpenAIService.AskAsync(UserQuestion);
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+                ErrorMessage = "An error occurred while processing your request.";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

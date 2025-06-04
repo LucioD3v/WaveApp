@@ -50,22 +50,15 @@
 
             <!-- OpenAI Interaction Section -->  
             <Frame BackgroundColor="#E3F2FD" CornerRadius="10" Padding="15">  
-                <VerticalStackLayout Spacing="10">  
-                    <Label Text="Ask OpenAI"   
-                           FontSize="18"   
-                           FontAttributes="Bold"   
-                           TextColor="#0D47A1" />  
-                    <Entry Placeholder="Type your question here..."   
-                           Text="{Binding UserQuestion}"   
-                           FontSize="16" />  
-                    <Button Text="Ask"   
-                            Command="{Binding AskOpenAICommand}"   
-                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />  
-                    <ActivityIndicator IsRunning="{Binding IsBusy}"   
-                                       IsVisible="{Binding IsBusy}" />  
-                    <Label Text="{Binding OpenAIResponse}"   
-                           FontSize="16"   
-                           TextColor="#0D47A1" />  
+                <VerticalStackLayout Padding="10" Spacing="10">  
+                    <Entry Placeholder="Ask a question..." Text="{Binding UserQuestion}" TextColor="Black" />  
+                    <Button Text="Ask" Command="{Binding AskOpenAICommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />  
+                    
+                    <!-- Mostrar mensaje de error -->
+                    <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+                    
+                    <!-- Mostrar respuesta -->
+                    <Label Text="{Binding OpenAIResponse}" TextColor="Black" />
                 </VerticalStackLayout>  
             </Frame>  
         </VerticalStackLayout>  
