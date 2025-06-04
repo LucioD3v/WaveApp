@@ -1,42 +1,73 @@
-﻿<ContentPage
-    x:Class="WaveApp.Views.DashboardPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:WaveApp.ViewModels"
-    Title="Dashboard">
-    <ContentPage.BindingContext>
-        <vm:DashboardViewModel />
-    </ContentPage.BindingContext>
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <!-- Frame para el clima -->
-            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15" BackgroundColor="Transparent">
-                <Grid>
-                    <!-- Información del clima -->
-                    <HorizontalStackLayout>
-                        <Image Source="{Binding WeatherIcon}" WidthRequest="48" HeightRequest="48" />
-                        <VerticalStackLayout>
-                            <Label Text="{Binding WeatherDescription}" FontAttributes="Bold" />
-                            <Label Text="{Binding Temperature}" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
+﻿<ContentPage  
+    x:Class="WaveApp.Views.DashboardPage"  
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+    xmlns:vm="clr-namespace:WaveApp.ViewModels"  
+    Title="Dashboard">  
+    <ContentPage.BindingContext>  
+        <vm:DashboardViewModel />  
+    </ContentPage.BindingContext>  
+    <ScrollView>  
+        <VerticalStackLayout Padding="20" Spacing="15">  
+            <!-- Header Section -->  
+            <Label Text="Welcome to WaveApp"  
+                   FontSize="24"  
+                   FontAttributes="Bold"  
+                   HorizontalOptions="Center" />  
 
-                    <!-- Ícono de información -->
-                    <ImageButton Source="info_icon.png"
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"
-                       WidthRequest="24"
-                       HeightRequest="24"
-                       BackgroundColor="Transparent"
-                       Clicked="OnInfoIconClicked" />
-                </Grid>
-            </Frame>
+            <Grid Padding="10" RowDefinitions="Auto" ColumnDefinitions="*,*">  
+                <!-- Weather Section -->  
+                <Frame Grid.Column="0" BackgroundColor="LightBlue" CornerRadius="10" Padding="10">  
+                    <VerticalStackLayout>  
+                        <Label Text="Weather" FontSize="20" FontAttributes="Bold" />  
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">  
+                            <Image Source="{Binding WeatherIcon}" HeightRequest="100" WidthRequest="100" />  
+                            <Label Text="{Binding Temperature}" FontSize="20" VerticalOptions="Center" />  
+                        </HorizontalStackLayout>  
+                        <Label Text="{Binding WeatherDescription}" FontSize="14" HorizontalOptions="CenterAndExpand" />  
+                    </VerticalStackLayout>  
+                </Frame>  
 
-            <!-- Ask OpenAI -->
-            <Editor Placeholder="Write your question about smart buoys..." Text="{Binding UserQuestion}" AutoSize="TextChanges"/>
-            <Button Text="Ask" Command="{Binding AskOpenAICommand}" IsEnabled="{Binding IsNotBusy}" />
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
-            <Label Text="{Binding OpenAIResponse}" />
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Info Section -->  
+                <Frame Grid.Column="1" BackgroundColor="SeaGreen" CornerRadius="10" Padding="10">  
+                    <VerticalStackLayout>  
+                        <Label Text="Information" FontSize="20" FontAttributes="Bold" />  
+                        
+                        <Label Text="" />
+                        <HorizontalStackLayout Spacing="5" VerticalOptions="Center" HorizontalOptions="Center">  
+                            <Label Text="Mathematical calculation of wave energy:" FontSize="14" />  
+                            <Label Text="P = (ρ · g² · H² · T) / (64π)" FontSize="14" FontAttributes="Italic" />  
+                        </HorizontalStackLayout>  
+                        <Label Text="" />  
+                        <Label Text="Where:" FontSize="14" />  
+                        <Label Text="ρ: Density of water (approximately 1025kg/m³)" FontSize="12" HorizontalTextAlignment="Center" />  
+                        <Label Text="g: Acceleration of gravity (9.81 m/s²)" FontSize="12" HorizontalTextAlignment="Center"/>  
+                        <Label Text="H: Significant wave height" FontSize="12" HorizontalTextAlignment="Center"/>  
+                        <Label Text="T: Period of the waves" FontSize="12" HorizontalTextAlignment="Center"/>  
+                    </VerticalStackLayout>  
+                </Frame>  
+            </Grid>  
+
+            <!-- OpenAI Interaction Section -->  
+            <Frame BackgroundColor="#E3F2FD" CornerRadius="10" Padding="15">  
+                <VerticalStackLayout Spacing="10">  
+                    <Label Text="Ask OpenAI"   
+                           FontSize="18"   
+                           FontAttributes="Bold"   
+                           TextColor="#0D47A1" />  
+                    <Entry Placeholder="Type your question here..."   
+                           Text="{Binding UserQuestion}"   
+                           FontSize="16" />  
+                    <Button Text="Ask"   
+                            Command="{Binding AskOpenAICommand}"   
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />  
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"   
+                                       IsVisible="{Binding IsBusy}" />  
+                    <Label Text="{Binding OpenAIResponse}"   
+                           FontSize="16"   
+                           TextColor="#0D47A1" />  
+                </VerticalStackLayout>  
+            </Frame>  
+        </VerticalStackLayout>  
+    </ScrollView>  
 </ContentPage>
