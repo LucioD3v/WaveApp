@@ -2,11 +2,31 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaveApp.Views.BuoysPage"
-             Title="My Buoys">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Mis Boyas">
+    <StackLayout Padding="10">
+        <Label Text="Lista de Boyas" 
+               FontSize="20" 
+               HorizontalOptions="Center" 
+               Margin="0,10,0,10" />
+        <ListView ItemsSource="{Binding Buoys}" 
+                  HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding Name}" 
+                                   FontAttributes="Bold" 
+                                   FontSize="16" />
+                            <Label Text="{Binding Description}" 
+                                   FontSize="14" 
+                                   TextColor="Gray" />
+                            <Label Text="{Binding Status}" 
+                                   FontSize="14" 
+                                   TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
 </ContentPage>
