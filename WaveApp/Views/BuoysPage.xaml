@@ -8,25 +8,20 @@
                FontSize="20" 
                HorizontalOptions="Center" 
                Margin="0,10,0,10" />
-        <ListView ItemsSource="{Binding Buoys}" 
-                  HasUnevenRows="True">
-            <ListView.ItemTemplate>
+        <CollectionView ItemsSource="{Binding Buoys}">
+            <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Padding="10">
-                            <Label Text="{Binding Name}" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" />
-                            <Label Text="{Binding Description}" 
-                                   FontSize="14" 
-                                   TextColor="Gray" />
-                            <Label Text="{Binding Status}" 
-                                   FontSize="14" 
-                                   TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
+                    <Frame Padding="10" CornerRadius="10" BorderColor="LightGray" Margin="5">
+                        <StackLayout>
+                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                            <Label Text="{Binding Status}" FontSize="14" TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
+                            <Label Text="{Binding CurrentEnergy, StringFormat='Energía: {0:F2} kW'}" FontSize="14" />
+                            <ProgressBar Progress="{Binding CurrentEnergy, Converter={StaticResource EnergyToProgressConverter}}" />
                         </StackLayout>
-                    </ViewCell>
+                    </Frame>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </StackLayout>
 </ContentPage>

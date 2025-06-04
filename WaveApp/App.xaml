@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <local:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <local:EnergyToProgressConverter x:Key="EnergyToProgressConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
