@@ -15,10 +15,10 @@
     <FlyoutItem Title="My Buoys" Icon="buoy.png">
         <ShellContent ContentTemplate="{DataTemplate views:BuoysPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Map" Icon="map.png">
+    <FlyoutItem Title="Buoy Map" Icon="map.png">
         <ShellContent ContentTemplate="{DataTemplate views:MapPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="OpenSeaMap" Icon="map.png">
+    <FlyoutItem Title="Open Sea Map" Icon="map.png">
         <ShellContent ContentTemplate="{DataTemplate views:OpenSeaMap}" />
     </FlyoutItem>
     <MenuItem Text="Log Out" Clicked="OnLogoutClicked" IconImageSource="logout.png"/>

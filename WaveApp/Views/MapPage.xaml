@@ -9,9 +9,14 @@
     </ContentPage.BindingContext>
 
     <Grid>
-        <!-- WebView para renderizar Google Maps -->
-        <WebView x:Name="GoogleMapView"
-                 VerticalOptions="FillAndExpand"
-                 HorizontalOptions="FillAndExpand" />
+        <!-- Header -->
+        <Grid RowDefinitions="Auto, *">
+            <StackLayout Orientation="Horizontal" BackgroundColor="#512BD4" Padding="10" HorizontalOptions="FillAndExpand">
+                <Button Text="Center Map" TextColor="White" BackgroundColor="#3A3A3A" Margin="10,0,0,0" Clicked="OnCenterMapClicked" HorizontalOptions="CenterAndExpand" />
+            </StackLayout>
+
+            <!-- Map View -->
+            <WebView x:Name="GoogleMapView" Grid.Row="1" />
+        </Grid>
     </Grid>
 </ContentPage>

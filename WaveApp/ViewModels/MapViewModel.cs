@@ -9,7 +9,7 @@ namespace WaveApp.ViewModels;
 public partial class MapViewModel : ObservableObject
 {
     private readonly Random _random = new();
-    private readonly IDispatcherTimer _waveTimer; // Use IDispatcherTimer instead of DispatcherTimer
+    private readonly IDispatcherTimer _waveTimer;
 
     public ObservableCollection<Buoy> Buoys { get; }
 
@@ -64,7 +64,6 @@ public partial class MapViewModel : ObservableObject
             }
         };
 
-        // Initialize the IDispatcherTimer
         _waveTimer = Application.Current.Dispatcher.CreateTimer();
         _waveTimer.Interval = TimeSpan.FromSeconds(2);
         _waveTimer.Tick += (s, e) => SimulateEnergyGeneration();
