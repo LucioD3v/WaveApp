@@ -1,4 +1,5 @@
 using WaveApp.Models;
+using Microsoft.Maui.Storage;
 
 namespace WaveApp.Views;
 
@@ -34,8 +35,28 @@ public partial class ProfilePage : ContentPage
 
     private async void OnEditPhotoClicked(object sender, EventArgs e)
     {
-        // Logic to edit profile picture
-        await DisplayAlert("Edit Photo", "Feature to edit photo coming soon!", "OK");
+        try
+        {
+            var result = await FilePicker.PickAsync(new PickOptions
+            {
+                PickerTitle = "Select a profile picture",
+                FileTypes = FilePickerFileType.Images
+            });
+
+            if (result != null)
+            {
+                // Update the profile picture
+                var stream = await result.OpenReadAsync();
+                ProfilePicture.Source = ImageSource.FromStream(() => stream);
+
+                // Optionally, save the new image path or stream to the user object
+                _user.ProfilePictureUrl = result.FullPath;
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"An error occurred while selecting the photo: {ex.Message}", "OK");
+        }
     }
 
     private async void OnEditNameClicked(object sender, EventArgs e)
