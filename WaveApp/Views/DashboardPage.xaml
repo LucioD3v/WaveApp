@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
     xmlns:vm="clr-namespace:WaveApp.ViewModels"  
     Title="Dashboard">  
+    
     <ContentPage.BindingContext>  
         <vm:DashboardViewModel />  
     </ContentPage.BindingContext>  
@@ -29,7 +30,7 @@
                 </Frame>  
 
                 <!-- Info Section -->  
-                <Frame Grid.Column="1" BackgroundColor="SeaGreen" CornerRadius="10" Padding="10">  
+                <Frame Grid.Column="1" BackgroundColor="SeaGreen" CornerRadius="10" Padding="10" Margin="10,0">  
                     <VerticalStackLayout>  
                         <Label Text="Information" FontSize="20" FontAttributes="Bold" />  
                         
@@ -60,7 +61,14 @@
                     <!-- Mostrar respuesta -->
                     <Label Text="{Binding OpenAIResponse}" TextColor="Black" />
                 </VerticalStackLayout>  
-            </Frame>  
+            </Frame>
+
+            <!-- Image of buoy in the sea -->
+            <Image Source="buoy_in_sea.jpg" Margin="0,0,0,0" HeightRequest="150" 
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand"
+                   Aspect="AspectFill" />
+
         </VerticalStackLayout>  
     </ScrollView>  
 </ContentPage>
