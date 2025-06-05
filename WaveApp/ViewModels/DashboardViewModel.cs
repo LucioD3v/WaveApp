@@ -27,7 +27,7 @@ namespace WaveApp.ViewModels
         {
             var weather = await WeatherService.GetWeatherAsync();
             WeatherDescription = weather.Description;
-            Temperature = $"{weather.Temperature}°C";
+            Temperature = $"{Math.Round((weather.Temperature * 9 / 5) + 32)}°F"; // Convert to Fahrenheit and round to whole degrees
             WeatherIcon = weather.IconUrl;
         }
 
