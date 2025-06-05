@@ -1,12 +1,40 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaveApp.Views.ProfilePage"
-             Title="My Profile">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Profile">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            <!-- Profile Picture -->
+            <Image x:Name="ProfilePicture" HeightRequest="150" WidthRequest="150" Aspect="AspectFill" HorizontalOptions="Center" />
+            <Button Text="Edit Photo" Clicked="OnEditPhotoClicked" />
+
+            <!-- Name -->
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Label Text="Name:" VerticalOptions="Center" />
+                <Label x:Name="NameLabel" VerticalOptions="Center" />
+                <Button Text="Edit" Clicked="OnEditNameClicked" />
+            </StackLayout>
+
+            <!-- Last Name -->
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Label Text="Last Name:" VerticalOptions="Center" />
+                <Label x:Name="LastNameLabel" VerticalOptions="Center" />
+                <Button Text="Edit" Clicked="OnEditLastNameClicked" />
+            </StackLayout>
+
+            <!-- Phone -->
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Label Text="Phone:" VerticalOptions="Center" />
+                <Label x:Name="PhoneLabel" VerticalOptions="Center" />
+                <Button Text="Edit" Clicked="OnEditPhoneClicked" />
+            </StackLayout>
+
+            <!-- Email -->
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Label Text="Email:" VerticalOptions="Center" />
+                <Label x:Name="EmailLabel" VerticalOptions="Center" />
+                <Button Text="Edit" Clicked="OnEditEmailClicked" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>
