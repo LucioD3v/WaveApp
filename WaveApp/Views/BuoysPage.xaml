@@ -2,23 +2,46 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaveApp.Views.BuoysPage"
-             Title="Mis Boyas">
+             >
+    
     <StackLayout Padding="10">
-        <Label Text="Lista de Boyas" 
+        <Label Text="Buoys Overview" 
                FontSize="20" 
                HorizontalOptions="Center" 
                Margin="0,10,0,10" />
         <CollectionView ItemsSource="{Binding Buoys}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="10" CornerRadius="10" BorderColor="LightGray" Margin="5">
-                        <StackLayout>
-                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                            <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
-                            <Label Text="{Binding Status}" FontSize="14" TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
-                            <Label Text="{Binding CurrentEnergy, StringFormat='Energía: {0:F2} kW'}" FontSize="14" />
-                            <ProgressBar Progress="{Binding CurrentEnergy, Converter={StaticResource EnergyToProgressConverter}}" />
-                        </StackLayout>
+                    <Frame Padding="10" CornerRadius="10" BorderColor="LightGray" Margin="5" BackgroundColor="White">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+                            <!-- Status Indicator -->
+                            <BoxView Grid.Row="0" Grid.Column="0" WidthRequest="20" HeightRequest="20" CornerRadius="10" 
+                                     BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" 
+                                     VerticalOptions="Center" HorizontalOptions="Center" />
+                            
+                            <!-- Name -->
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            
+                            <!-- Description -->
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                            
+                            <!-- Energy -->
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding CurrentEnergy, StringFormat='Energy: {0:F2} kW'}" FontSize="14" />
+                            
+                            <!-- Location -->
+                            <Label Grid.Row="3" Grid.Column="1" Text="{Binding Location}" FontSize="14" TextColor="Gray" />
+                            
+                            <!-- Last Update -->
+                            <Label Grid.Row="3" Grid.Column="2" Text="{Binding LastUpdate, StringFormat='Updated: {0:MM/dd/yyyy HH:mm}'}" FontSize="12" TextColor="Gray" HorizontalOptions="End" />
+                            
+                            <!-- Battery Indicator -->
+                            <Image Grid.Row="0" Grid.Column="2" Source="{Binding BatteryLevel, Converter={StaticResource BatteryIconConverter}}" 
+                                   WidthRequest="20" HeightRequest="20" HorizontalOptions="End" VerticalOptions="Center" />
+                            
+                            <!-- Action Button -->
+                            <Button Grid.Row="4" Grid.ColumnSpan="3" Text="View Details" Command="{Binding ViewDetailsCommand}" 
+                                    BackgroundColor="LightBlue" TextColor="White" CornerRadius="5" />
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
