@@ -1,5 +1,4 @@
 using WaveApp.Models;
-using Microsoft.Maui.Storage;
 
 namespace WaveApp.Views;
 
@@ -14,11 +13,11 @@ public partial class ProfilePage : ContentPage
         // Simulate loading user data
         _user = new User
         {
-            Name = "John",
-            LastName = "Doe",
-            ProfilePictureUrl = "https://example.com/profile.jpg",
-            Phone = "123-456-7890",
-            Email = "john.doe@example.com"
+            Name = "Vicente Guzman",
+            Bio = "Software Developer",
+            ProfilePictureUrl = "https://vicenteguzman.com/assets/icons/icon2.jpg",
+            Phone = "+52 55 4348 4042",
+            Email = "vicente.g.guzman@accenture.com"
         };
 
         LoadUserData();
@@ -27,17 +26,17 @@ public partial class ProfilePage : ContentPage
     private void LoadUserData()
     {
         ProfilePicture.Source = _user.ProfilePictureUrl;
-        NameLabel.Text = _user.Name;
-        LastNameLabel.Text = _user.LastName;
-        PhoneLabel.Text = _user.Phone;
-        EmailLabel.Text = _user.Email;
+        NameEntry.Text = _user.Name; // Updated to match the XAML Entry control
+        BioEditor.Text = _user.Bio; // Updated to match the XAML Editor control
+        PhoneEntry.Text = _user.Phone; // Updated to match the XAML Entry control
+        EmailEntry.Text = _user.Email; // Updated to match the XAML Entry control
     }
 
     private async void OnEditPhotoClicked(object sender, EventArgs e)
     {
         try
         {
-            var result = await FilePicker.PickAsync(new PickOptions
+            var result = await FilePicker.Default.PickAsync(new PickOptions
             {
                 PickerTitle = "Select a profile picture",
                 FileTypes = FilePickerFileType.Images
@@ -59,43 +58,13 @@ public partial class ProfilePage : ContentPage
         }
     }
 
-    private async void OnEditNameClicked(object sender, EventArgs e)
+    private async void OnSaveChangesClicked(object sender, EventArgs e)
     {
-        var newName = await DisplayPromptAsync("Edit Name", "Enter your new name:", initialValue: _user.Name);
-        if (!string.IsNullOrWhiteSpace(newName))
-        {
-            _user.Name = newName;
-            NameLabel.Text = newName;
-        }
-    }
+        _user.Name = NameEntry.Text;
+        _user.Bio = BioEditor.Text; 
+        _user.Phone = PhoneEntry.Text;
+        _user.Email = EmailEntry.Text;
 
-    private async void OnEditLastNameClicked(object sender, EventArgs e)
-    {
-        var newLastName = await DisplayPromptAsync("Edit Last Name", "Enter your new last name:", initialValue: _user.LastName);
-        if (!string.IsNullOrWhiteSpace(newLastName))
-        {
-            _user.LastName = newLastName;
-            LastNameLabel.Text = newLastName;
-        }
-    }
-
-    private async void OnEditPhoneClicked(object sender, EventArgs e)
-    {
-        var newPhone = await DisplayPromptAsync("Edit Phone", "Enter your new phone number:", initialValue: _user.Phone);
-        if (!string.IsNullOrWhiteSpace(newPhone))
-        {
-            _user.Phone = newPhone;
-            PhoneLabel.Text = newPhone;
-        }
-    }
-
-    private async void OnEditEmailClicked(object sender, EventArgs e)
-    {
-        var newEmail = await DisplayPromptAsync("Edit Email", "Enter your new email address:", initialValue: _user.Email);
-        if (!string.IsNullOrWhiteSpace(newEmail))
-        {
-            _user.Email = newEmail;
-            EmailLabel.Text = newEmail;
-        }
+        await DisplayAlert("Success", "Changes saved successfully!", "OK");
     }
 }

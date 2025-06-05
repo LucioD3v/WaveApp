@@ -1,40 +1,49 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maui="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
              x:Class="WaveApp.Views.ProfilePage"
-             Title="Profile">
+             BackgroundColor="#F5F5F5">
     <ScrollView>
-        <StackLayout Padding="20" Spacing="15">
-            <!-- Profile Picture -->
-            <Image x:Name="ProfilePicture" HeightRequest="150" WidthRequest="150" Aspect="AspectFill" HorizontalOptions="Center" />
-            <Button Text="Edit Photo" Clicked="OnEditPhotoClicked" />
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Avatar Section -->
+            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" HorizontalOptions="Center" 
+                         WidthRequest="150" HeightRequest="150">
+                <Grid>
+                    <Image x:Name="ProfilePicture" WidthRequest="150" HeightRequest="150" Aspect="AspectFill" 
+                           Source="default_profile_picture.png" />
+                    <ImageButton Source="edit_icon.png" WidthRequest="30" HeightRequest="30" 
+                                 BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="End" 
+                                 Margin="5" Clicked="OnEditPhotoClicked" />
+                </Grid>
+            </maui:Border>
 
-            <!-- Name -->
-            <StackLayout Orientation="Horizontal" Spacing="10">
-                <Label Text="Name:" VerticalOptions="Center" />
-                <Label x:Name="NameLabel" VerticalOptions="Center" />
-                <Button Text="Edit" Clicked="OnEditNameClicked" />
-            </StackLayout>
+            <!-- Name and Bio Section -->
+            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Name" FontSize="18" TextColor="#333" />
+                    <Entry x:Name="NameEntry" Placeholder="Enter your name" FontSize="16" TextColor="Black"/>
+                    <Label Text="Bio" FontSize="18" TextColor="#333" />
+                    <Editor x:Name="BioEditor" Placeholder="Write something about yourself" FontSize="16" TextColor="Black" />
+                </VerticalStackLayout>
+            </maui:Border>
 
-            <!-- Last Name -->
-            <StackLayout Orientation="Horizontal" Spacing="10">
-                <Label Text="Last Name:" VerticalOptions="Center" />
-                <Label x:Name="LastNameLabel" VerticalOptions="Center" />
-                <Button Text="Edit" Clicked="OnEditLastNameClicked" />
-            </StackLayout>
+            <!-- Contact Information Section -->
+            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+                        <Image Source="email_icon.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" />
+                        <Entry x:Name="EmailEntry" Placeholder="Enter your email" FontSize="16" Grid.Column="1" TextColor="Black" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+                        <Image Source="phone_icon.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" />
+                        <Entry x:Name="PhoneEntry" Placeholder="Enter your phone number" FontSize="16" Grid.Column="1" TextColor="Black" />
+                    </Grid>
+                </VerticalStackLayout>
+            </maui:Border>
 
-            <!-- Phone -->
-            <StackLayout Orientation="Horizontal" Spacing="10">
-                <Label Text="Phone:" VerticalOptions="Center" />
-                <Label x:Name="PhoneLabel" VerticalOptions="Center" />
-                <Button Text="Edit" Clicked="OnEditPhoneClicked" />
-            </StackLayout>
-
-            <!-- Email -->
-            <StackLayout Orientation="Horizontal" Spacing="10">
-                <Label Text="Email:" VerticalOptions="Center" />
-                <Label x:Name="EmailLabel" VerticalOptions="Center" />
-                <Button Text="Edit" Clicked="OnEditEmailClicked" />
-            </StackLayout>
-        </StackLayout>
+            <!-- Edit/Save Button -->
+            <Button Text="Save Changes" FontSize="18" BackgroundColor="#007AFF" TextColor="White" CornerRadius="10" 
+                    HorizontalOptions="Center" Clicked="OnSaveChangesClicked" />
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
