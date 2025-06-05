@@ -1,16 +1,27 @@
-﻿namespace WaveApp
+﻿using WaveApp.Views;
+using System.Windows.Input;
+
+namespace WaveApp
 {
     public partial class AppShell : Shell
     {
+        public ICommand LogoutCommand { get; }
+      
+
+        [Obsolete]
         public AppShell()
         {
             InitializeComponent();
-        }
 
-        private async void OnLogoutClicked(object sender, EventArgs e)
-        {
-            Preferences.Set("IsLoggedIn", false);
-            await Shell.Current.GoToAsync("//LoginPage");
+            LogoutCommand = new Command(async () =>
+            {
+                Application.Current.MainPage = new NavigationPage(new LoginPage());
+
+            });
+
+           
+
+            BindingContext = this;
         }
     }
 }
