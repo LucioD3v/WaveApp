@@ -7,7 +7,7 @@ namespace WaveApp.Services
     public static class WeatherService
     {
         private const string ApiKey = "22a32a78e31a987eb36e8efc7a9eb6cb";
-        private const string City = "Cancún, MX";
+        private const string City = "San Francisco, USA";
 
         public static async Task<WeatherInfo> GetWeatherAsync()
         {
