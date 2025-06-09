@@ -13,13 +13,5 @@ namespace WaveApp
         {
             return new Window(new AppShell());
         }
-
-        protected override void OnStart()
-        {
-            if (Preferences.Get("IsLoggedIn", false))
-                MainPage = new AppShell();
-            else
-                MainPage = new NavigationPage(new LoginPage());
-        }
     }
 }

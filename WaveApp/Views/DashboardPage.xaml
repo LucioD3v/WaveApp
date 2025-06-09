@@ -1,74 +1,390 @@
-﻿<ContentPage  
-    x:Class="WaveApp.Views.DashboardPage"  
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
-    xmlns:vm="clr-namespace:WaveApp.ViewModels"  
-    Title="Dashboard">  
-    
-    <ContentPage.BindingContext>  
-        <vm:DashboardViewModel />  
-    </ContentPage.BindingContext>  
-    <ScrollView>  
-        <VerticalStackLayout Padding="20" Spacing="15">  
-            <!-- Header Section -->  
-            <Label Text="Welcome to WaveApp"  
-                   FontSize="24"  
-                   FontAttributes="Bold"  
-                   HorizontalOptions="Center" />  
+﻿<?xml version="1.0" encoding="utf-8" ?>
 
-            <Grid Padding="10" RowDefinitions="Auto" ColumnDefinitions="*,*">  
-                <!-- Weather Section -->  
-                <Frame Grid.Column="0" BackgroundColor="LightBlue" CornerRadius="10" Padding="10">  
-                    <VerticalStackLayout>  
-                        <Label Text="Weather" FontSize="20" FontAttributes="Bold" />  
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">  
-                            <Image Source="{Binding WeatherIcon}" HeightRequest="100" WidthRequest="100" />  
-                            <Label Text="{Binding Temperature}" FontSize="20" VerticalOptions="Center" />  
-                        </HorizontalStackLayout>  
-                        <Label Text="{Binding WeatherDescription}" FontSize="14" HorizontalOptions="CenterAndExpand" />  
-                    </VerticalStackLayout>  
-                </Frame>  
+    <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveApp.Views.DashboardPage"
+             BackgroundColor="#0A0E1A"
+             Title="Wave Energy Dashboard">
 
-                <!-- Info Section -->  
-                <Frame Grid.Column="1" BackgroundColor="SeaGreen" CornerRadius="10" Padding="10" Margin="10,0">  
-                    <VerticalStackLayout>  
-                        <Label Text="Information" FontSize="20" FontAttributes="Bold" />  
-                        
-                        <Label Text="" />
-                        <HorizontalStackLayout Spacing="5" VerticalOptions="Center" HorizontalOptions="Center">  
-                            <Label Text="Mathematical calculation of wave energy:" FontSize="14" />  
-                            <Label Text="P = (ρ · g² · H² · T) / (64π)" FontSize="14" FontAttributes="Italic" />  
-                        </HorizontalStackLayout>  
-                        <Label Text="" />  
-                        <Label Text="Where:" FontSize="14" />  
-                        <Label Text="ρ: Density of water (approximately 1025kg/m³)" FontSize="12" HorizontalTextAlignment="Center" />  
-                        <Label Text="g: Acceleration of gravity (9.81 m/s²)" FontSize="12" HorizontalTextAlignment="Center"/>  
-                        <Label Text="H: Significant wave height" FontSize="12" HorizontalTextAlignment="Center"/>  
-                        <Label Text="T: Period of the waves" FontSize="12" HorizontalTextAlignment="Center"/>  
-                    </VerticalStackLayout>  
-                </Frame>  
-            </Grid>  
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Color Definitions -->
+            <Color x:Key="PrimaryBlue">#00D4FF</Color>
+            <Color x:Key="SecondaryBlue">#0099CC</Color>
+            <Color x:Key="AccentGreen">#00FF88</Color>
+            <Color x:Key="WarningOrange">#FF6B35</Color>
+            <Color x:Key="DangerRed">#FF3B30</Color>
+            <Color x:Key="DarkBackground">#0A0E1A</Color>
+            <Color x:Key="CardBackground">#1A1F2E</Color>
+            <Color x:Key="TextPrimary">#FFFFFF</Color>
+            <Color x:Key="TextSecondary">#8E9AAF</Color>
 
-            <!-- OpenAI Interaction Section -->  
-            <Frame BackgroundColor="#E3F2FD" CornerRadius="10" Padding="15">  
-                <VerticalStackLayout Padding="10" Spacing="10">  
-                    <Entry Placeholder="Ask a question..." Text="{Binding UserQuestion}" TextColor="Black" />  
-                    <Button Text="Ask" Command="{Binding AskOpenAICommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />  
-                    
-                    <!-- Mostrar mensaje de error -->
-                    <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
-                    
-                    <!-- Mostrar respuesta -->
-                    <Label Text="{Binding OpenAIResponse}" TextColor="Black" />
-                </VerticalStackLayout>  
+            <!-- Gradients -->
+            <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#00D4FF" Offset="0"/>
+                <GradientStop Color="#0099CC" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="EnergyGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#00FF88" Offset="0"/>
+                <GradientStop Color="#00CC66" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1A1F2E" Offset="0"/>
+                <GradientStop Color="#242B3D" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="AICardGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1A2332" Offset="0"/>
+                <GradientStop Color="#243447" Offset="1"/>
+            </LinearGradientBrush>
+
+            <!-- Styles -->
+            <Style x:Key="CardStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+                <Setter Property="HasShadow" Value="True"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
+
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="ValueStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}"/>
+                <Setter Property="FontSize" Value="28"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="SubtitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <Style x:Key="BuoyCardStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="12"/>
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="HasShadow" Value="True"/>
+            </Style>
+
+            <!-- Animations -->
+            <!--
+            <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                               From="0.7" To="1.0" Duration="0:0:2"
+                               AutoReverse="True"/>
+            </Storyboard>
+
+            <Storyboard x:Key="SlideInAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="TranslationX"
+                               From="300" To="0" Duration="0:0:1"/>
+            </Storyboard>
+            -->
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid Padding="16" RowSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Section -->
+            <Frame Grid.Row="0" Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryGradient}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackLayout Grid.Column="0">
+                        <Label Text="⚡ WaveForce Energy" Style="{StaticResource TitleStyle}" FontSize="26" TextColor="White"/>
+                        <Label Text="🌊 Advanced Ocean Energy Monitoring" Style="{StaticResource SubtitleStyle}" TextColor="White" FontSize="15"/>
+                        <Label Text="🕐 Last Update: Live monitoring active" Style="{StaticResource SubtitleStyle}" TextColor="White" Opacity="0.9"/>
+                    </StackLayout>
+                    <Button Grid.Column="1" 
+                            Text="ℹ️" 
+                            BackgroundColor="Transparent" 
+                            TextColor="White" 
+                            FontSize="24"
+                            Clicked="OnInfoIconClicked"/>
+                </Grid>
             </Frame>
 
-            <!-- Image of buoy in the sea -->
-            <Image Source="buoy_in_sea.jpg" Margin="0,0,0,0" HeightRequest="150" 
-                   HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="CenterAndExpand"
-                   Aspect="AspectFill" />
+            <!-- Energy Overview Cards -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        </VerticalStackLayout>  
-    </ScrollView>  
+                <Frame Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <StackLayout>
+                        <Label Text="💡 Total Energy Collected" Style="{StaticResource TitleStyle}" FontSize="16"/>
+                        <Label Text="247.8 kWh" Style="{StaticResource ValueStyle}" TextColor="{StaticResource AccentGreen}" FontSize="26"/>
+                        <Label Text="📈 +12.5% today | +3.2 kWh/hr" Style="{StaticResource SubtitleStyle}" TextColor="{StaticResource AccentGreen}"/>
+                    </StackLayout>
+                </Frame>
+
+                <Frame Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <StackLayout>
+                        <Label Text="⚡ Current Power Output" Style="{StaticResource TitleStyle}" FontSize="16"/>
+                        <Label Text="18.4 kW" Style="{StaticResource ValueStyle}" TextColor="{StaticResource PrimaryBlue}" FontSize="26"/>
+                        <Label Text="🔥 Peak: 22.1 kW | Avg: 16.8 kW" Style="{StaticResource SubtitleStyle}"/>
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Buoy Fleet Status -->
+            <Frame Grid.Row="2" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Grid Margin="0,0,0,15">
+                        <Label Text="🌊 Buoy Fleet Status" Style="{StaticResource TitleStyle}" HorizontalOptions="Start"/>
+                        <Label Text="✅ 5 Active | ⚠️ 1 Maintenance" Style="{StaticResource SubtitleStyle}" TextColor="{StaticResource AccentGreen}" HorizontalOptions="End"/>
+                    </Grid>
+
+                    <Grid RowSpacing="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Buoy Alpha (WB-001) -->
+                        <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Alpha (WB-001)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🟢" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="45.2 kWh" TextColor="{StaticResource AccentGreen}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="Efficiency: 94% | 🌊 Wave: 2.1m" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Buoy Beta (WB-002) -->
+                        <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Beta (WB-002)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🟢" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="38.7 kWh" TextColor="{StaticResource AccentGreen}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="Efficiency: 87% | 🌊 Wave: 1.8m" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Buoy Gamma (WB-003) - Maintenance -->
+                        <Frame Grid.Row="1" Grid.Column="0" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Gamma (WB-003)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🔴" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="0.0 kWh" TextColor="{StaticResource DangerRed}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="🔧 Scheduled Maintenance" TextColor="{StaticResource WarningOrange}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Buoy Delta (WB-004) -->
+                        <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Delta (WB-004)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🟢" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="52.1 kWh" TextColor="{StaticResource AccentGreen}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="Efficiency: 96% | 🌊 Wave: 2.3m" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Buoy Echo (WB-005) -->
+                        <Frame Grid.Row="2" Grid.Column="0" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Echo (WB-005)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🟢" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="41.8 kWh" TextColor="{StaticResource AccentGreen}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="Efficiency: 89% | 🌊 Wave: 1.9m" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Buoy Foxtrot (WB-006) - Warning -->
+                        <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource BuoyCardStyle}">
+                            <StackLayout>
+                                <Grid>
+                                    <Label Text="Foxtrot (WB-006)" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                    <Label Text="🟡" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <Label Text="28.3 kWh" TextColor="{StaticResource WarningOrange}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="Efficiency: 72% | ⚠️ Check sensors" TextColor="{StaticResource WarningOrange}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Performance Analytics Chart -->
+            <Frame Grid.Row="3" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Label Text="📊 Performance Analytics (7 Days)" Style="{StaticResource TitleStyle}" Margin="0,0,0,15"/>
+                    <Grid HeightRequest="140" BackgroundColor="#0F1419" Margin="0,10" Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Chart Bars with Labels -->
+                        <StackLayout Grid.Column="0">
+                            <BoxView BackgroundColor="{StaticResource PrimaryBlue}" HeightRequest="60" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Mon" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="186" TextColor="{StaticResource PrimaryBlue}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="1">
+                            <BoxView BackgroundColor="{StaticResource AccentGreen}" HeightRequest="85" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Tue" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="214" TextColor="{StaticResource AccentGreen}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="2">
+                            <BoxView BackgroundColor="{StaticResource PrimaryBlue}" HeightRequest="45" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Wed" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="158" TextColor="{StaticResource PrimaryBlue}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="3">
+                            <BoxView BackgroundColor="{StaticResource AccentGreen}" HeightRequest="95" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Thu" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="235" TextColor="{StaticResource AccentGreen}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="4">
+                            <BoxView BackgroundColor="{StaticResource PrimaryBlue}" HeightRequest="70" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Fri" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="192" TextColor="{StaticResource PrimaryBlue}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="5">
+                            <BoxView BackgroundColor="{StaticResource AccentGreen}" HeightRequest="110" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                            <Label Text="Sat" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                            <Label Text="267" TextColor="{StaticResource AccentGreen}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="6">
+                                <BoxView BackgroundColor="{StaticResource WarningOrange}" HeightRequest="55" VerticalOptions="End" Margin="2" CornerRadius="2"/>
+                                <Label Text="Sun" TextColor="{StaticResource TextSecondary}" FontSize="10" HorizontalTextAlignment="Center"/>
+                                <Label Text="170" TextColor="{StaticResource WarningOrange}" FontSize="10" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        </StackLayout>
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Label Text="📈 Weekly Total: 1,422 kWh | Average: 203 kWh/day" Style="{StaticResource SubtitleStyle}" HorizontalTextAlignment="Center" TextColor="{StaticResource AccentGreen}"/>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- AI Optimization Recommendations -->
+            <Frame Grid.Row="4" Style="{StaticResource CardStyle}" Background="{StaticResource AICardGradient}">
+                <StackLayout>
+                    <Grid Margin="0,0,0,15">
+                        <Label Text="🤖 AI Optimization Center" Style="{StaticResource TitleStyle}" HorizontalOptions="Start"/>
+                        <Label Text="🧠 3 Active Insights" Style="{StaticResource SubtitleStyle}" TextColor="{StaticResource PrimaryBlue}" HorizontalOptions="End"/>
+                    </Grid>
+
+                    <StackLayout Spacing="12">
+                        <!-- AI Recommendation 1 -->
+                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource PrimaryBlue}">
+                            <StackLayout>
+                                <Label Text="🎯 Positioning Optimization" TextColor="{StaticResource PrimaryBlue}" FontSize="14" FontAttributes="Bold"/>
+                                <Label Text="Wave conditions in Zone A show 18% higher energy potential. Consider repositioning Buoy Beta for optimal capture." 
+                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                <Label Text="💡 Potential gain: +6.8 kWh/day" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- AI Recommendation 2 -->
+                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource AccentGreen}">
+                            <StackLayout>
+                                <Label Text="🔧 Predictive Maintenance" TextColor="{StaticResource AccentGreen}" FontSize="14" FontAttributes="Bold"/>
+                                <Label Text="Buoy Foxtrot shows declining efficiency. Sensor calibration recommended within 72 hours to prevent 15% energy loss." 
+                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                <Label Text="⏰ Schedule maintenance: High priority" TextColor="{StaticResource WarningOrange}" FontSize="12" FontAttributes="Bold"/>
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- AI Recommendation 3 -->
+                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource WarningOrange}">
+                            <StackLayout>
+                                <Label Text="🌊 Weather Optimization" TextColor="{StaticResource WarningOrange}" FontSize="14" FontAttributes="Bold"/>
+                                <Label Text="Storm system approaching in 48 hours. High wave activity predicted - adjust safety protocols and expect 25% energy increase." 
+                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                <Label Text="⚡ Expected boost: +45 kWh over 3 days" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                            </StackLayout>
+                        </Frame>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- System Status & Alerts -->
+            <Frame Grid.Row="5" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Label Text="🛡️ System Status and Alerts" Style="{StaticResource TitleStyle}" Margin="0,0,0,15"/>
+                    <StackLayout Spacing="10">
+
+                        <Grid>
+                            <Ellipse Fill="{StaticResource AccentGreen}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="   ✅ All critical systems operational - Network connectivity: 100%" 
+                                   TextColor="{StaticResource AccentGreen}" FontSize="14" VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Grid>
+                            <Ellipse Fill="{StaticResource WarningOrange}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="   ⚠️ Buoy Gamma maintenance window: Tomorrow 6:00 AM - 2:00 PM" 
+                                   TextColor="{StaticResource WarningOrange}" FontSize="14" VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Grid>
+                            <Ellipse Fill="{StaticResource PrimaryBlue}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="   🔄 Firmware update v2.4.1 available for 3 units (performance +5%)" 
+                                   TextColor="{StaticResource PrimaryBlue}" FontSize="14" VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Grid>
+                            <Ellipse Fill="{StaticResource AccentGreen}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="   📡 Data transmission: 2.4 TB collected | Cloud sync: Active" 
+                                   TextColor="{StaticResource TextSecondary}" FontSize="14" VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Grid>
+                            <Ellipse Fill="{StaticResource PrimaryBlue}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="   🌐 Remote monitoring: 24/7 active | Next inspection: Dec 15" 
+                                   TextColor="{StaticResource TextSecondary}" FontSize="14" VerticalOptions="Center"/>
+                        </Grid>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+        </Grid>
+    </ScrollView>
 </ContentPage>
