@@ -1,14 +1,25 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
 
 namespace WaveApp.Views;
 
-public partial class DashboardPage : ContentPage
+public partial class DashboardPage : ContentPage , INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     private readonly Random _random = new Random();
     private Timer _updateTimer;
     private readonly List<BuoyData> _buoys;
@@ -22,16 +33,156 @@ public partial class DashboardPage : ContentPage
     private double _basePowerOutput = 18.4;
     private int _updateCounter = 0;
 
+    private double _totalEnergy;
+    public double TotalEnergy
+    {
+        get => _totalEnergy;
+        set
+        {
+            if (_totalEnergy != value)
+            {
+                _totalEnergy = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _energyTrend;
+    public string EnergyTrend
+    {
+        get => _energyTrend;
+        set
+        {
+            if (_energyTrend != value)
+            {
+                _energyTrend = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private double _currentPower;
+    public double CurrentPower
+    {
+        get => _currentPower;
+        set
+        {
+            if (_currentPower != value)
+            {
+                _currentPower = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _powerTrend;
+    public string PowerTrend
+    {
+        get => _powerTrend;
+        set
+        {
+            if (_powerTrend != value)
+            {
+                _powerTrend = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _fleetStatusSummary;
+    public string FleetStatusSummary
+    {
+        get => _fleetStatusSummary;
+        set
+        {
+            if (_fleetStatusSummary != value)
+            {
+                _fleetStatusSummary = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // In code-behind
+    private bool _showStack1 = true;
+    public bool ShowStack1
+    {
+        get => _showStack1;
+        set { _showStack1 = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowStack2)); }
+    }
+    public bool ShowStack2 => !ShowStack1;
+
+    private void OnToggleClicked(object sender, EventArgs e)
+    {
+        ShowStack1 = !ShowStack1;
+    }
+
+    public ObservableCollection<BuoyData> Buoys { get; set; }
+
+    public ObservableCollection<ChartBarData> ChartBars { get; set; } = new ObservableCollection<ChartBarData>();
+
+    private void InitializeChartData()
+    {
+        var days = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        var colors = new[]
+        {
+        "PrimaryBlue",
+        "AccentGreen",
+        "PrimaryBlue",
+        "AccentGreen",
+        "PrimaryBlue",
+        "AccentGreen",
+        "WarningOrange"
+        };
+
+        // Clear existing data first
+        ChartBars.Clear();
+
+        for (int i = 0; i < 7; i++)
+        {
+            var baseValue = 110 + (_random.NextDouble() - 0.5) * 60;
+            ChartBars.Add(new ChartBarData
+            {
+                Day = days[i],
+                Color = colors[i],
+                Value = Math.Max(120, baseValue)
+            });
+        }
+    }
+
     public DashboardPage()
     {
         InitializeComponent();
+        InitializeChartData();
+
         _buoys = InitializeBuoys();
+        Buoys = new ObservableCollection<BuoyData>(_buoys);
+
         _aiRecommendations = InitializeAIRecommendations();
         _weatherConditions = InitializeWeatherConditions();
         _lastUpdate = DateTime.Now;
 
-        // Start real-time updates every 4 seconds
-        _updateTimer = new Timer(UpdateDashboardData, null, TimeSpan.Zero, TimeSpan.FromSeconds(4));
+        // Set initial values
+        TotalEnergy = _baseTotalEnergy;
+        CurrentPower = _basePowerOutput;
+        UpdateTrendStrings();
+
+        // Set the binding context
+        BindingContext = this;
+
+        // Start real-time updates
+        _updateTimer = new Timer(UpdateDashboardData, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+    }
+
+    private void UpdateTrendStrings()
+    {
+        // Calculate trends based on recent changes
+        var energyChange = TotalEnergy - _baseTotalEnergy;
+        var energyPercentChange = (energyChange / _baseTotalEnergy) * 100;
+        var powerChange = CurrentPower - _basePowerOutput;
+
+        EnergyTrend = $"📈 {energyPercentChange:+0.0;-0.0;0}% today | {energyChange:+0.0;-0.0;0} kWh/hr";
+        PowerTrend = $"🔥 Peak: {CurrentPower * 1.2:0.0} kW | Avg: {CurrentPower * 0.85:0.0} kW";
     }
 
     private List<BuoyData> InitializeBuoys()
@@ -221,25 +372,9 @@ public partial class DashboardPage : ContentPage
                 UpdateHeaderSection();
                 UpdateEnergyOverview();
                 UpdateBuoyData();
-                UpdateBuoyCards();
 
-                // Update AI recommendations every 3 updates (12 seconds)
-                if (_updateCounter % 3 == 0)
-                {
-                    UpdateAIRecommendations();
-                }
-
-                // Update performance chart every 5 updates (20 seconds)
-                if (_updateCounter % 5 == 0)
-                {
-                    UpdatePerformanceChart();
-                }
-
-                // Update system status every 4 updates (16 seconds)
-                if (_updateCounter % 4 == 0)
-                {
-                    UpdateSystemStatus();
-                }
+                // Update chart every update (2 seconds) for smooth animation
+                UpdatePerformanceChart();
             }
             catch (Exception ex)
             {
@@ -258,63 +393,86 @@ public partial class DashboardPage : ContentPage
     {
         // Update total energy with realistic fluctuations
         var energyVariation = (_random.NextDouble() - 0.5) * 8; // ±4 kWh variation
-        var newTotalEnergy = Math.Max(200, _baseTotalEnergy + energyVariation);
+        TotalEnergy = Math.Max(200, _baseTotalEnergy + energyVariation);
 
         // Update power output
         var powerVariation = (_random.NextDouble() - 0.5) * 6; // ±3 kW variation
-        var newPowerOutput = Math.Max(12, _basePowerOutput + powerVariation);
+        CurrentPower = Math.Max(12, _basePowerOutput + powerVariation);
 
-        // Update values if labels exist (they're defined in XAML with static values)
-        // In a real implementation, you would bind these to properties
+        // Update trend strings
+        UpdateTrendStrings();
 
-        // Calculate and update derived metrics
+        // Notify UI of changes
+        OnPropertyChanged(nameof(TotalEnergy));
+        OnPropertyChanged(nameof(CurrentPower));
+        OnPropertyChanged(nameof(EnergyTrend));
+        OnPropertyChanged(nameof(PowerTrend));
+
+        // Calculate and update derived metrics (for future use)
         var dailyGrowth = 12.5 + (_random.NextDouble() - 0.5) * 3; // 12.5% ± 1.5%
         var hourlyRate = 3.2 + (_random.NextDouble() - 0.5) * 0.8; // 3.2 ± 0.4 kWh/hr
-        var peakPower = Math.Max(newPowerOutput, 22.1 + (_random.NextDouble() - 0.5) * 2);
-        var avgPower = newPowerOutput * 0.85; // Average is typically 85% of current
+        var peakPower = Math.Max(CurrentPower, 22.1 + (_random.NextDouble() - 0.5) * 2);
+        var avgPower = CurrentPower * 0.85; // Average is typically 85% of current
     }
 
     private void UpdateBuoyData()
     {
-        foreach (var buoy in _buoys)
+        // Simulate wave patterns that affect all buoys similarly
+        var baseWaveHeight = 1.5 + (Math.Sin(_updateCounter * 0.15) * 0.8);
+
+        for (int i = 0; i < _buoys.Count; i++)
         {
+            var buoy = _buoys[i];
             if (buoy.Status == BuoyStatus.Active)
             {
-                // Update energy with realistic fluctuations
-                var energyVariation = (_random.NextDouble() - 0.5) * 4; // ±2 kWh variation
-                buoy.CurrentEnergy = Math.Max(0, buoy.BaseEnergy + energyVariation);
+                // Each buoy has slightly different response to waves
+                var buoyFactor = 0.8 + (_random.NextDouble() * 0.4);
 
-                // Update efficiency
-                var efficiencyVariation = _random.Next(-2, 3); // ±2% variation
-                buoy.CurrentEfficiency = Math.Clamp(buoy.BaseEfficiency + efficiencyVariation, 70, 100);
+                // Update wave height with base pattern + individual variation
+                buoy.WaveHeight = Math.Max(0.5, baseWaveHeight * buoyFactor + (_random.NextDouble() - 0.5) * 0.3);
 
-                // Update wave height
-                var waveVariation = (_random.NextDouble() - 0.5) * 0.4; // ±0.2m variation
-                buoy.WaveHeight = Math.Max(0.5, buoy.WaveHeight + waveVariation);
+                // Energy production is proportional to wave height squared
+                var energyFactor = Math.Pow(buoy.WaveHeight / 2.0, 2);
+                buoy.CurrentEnergy = buoy.BaseEnergy * energyFactor * (0.9 + (_random.NextDouble() * 0.2));
+
+                // Efficiency depends on maintenance age and current conditions
+                var daysSinceMaintenance = (DateTime.Now - buoy.LastMaintenance).TotalDays;
+                var maintenanceFactor = Math.Max(0.7, 1.0 - (daysSinceMaintenance / 100.0));
+                buoy.CurrentEfficiency = (int)(buoy.BaseEfficiency * maintenanceFactor * (0.95 + (_random.NextDouble() * 0.1)));
             }
             else if (buoy.Status == BuoyStatus.Warning)
             {
-                // Warning status buoys have reduced and more variable performance
-                var energyVariation = (_random.NextDouble() - 0.5) * 6; // Higher variation
-                buoy.CurrentEnergy = Math.Max(15, buoy.BaseEnergy + energyVariation);
+                // Warning buoys have more unstable performance
+                buoy.WaveHeight = baseWaveHeight * (0.6 + (_random.NextDouble() * 0.3));
+                buoy.CurrentEnergy = buoy.BaseEnergy * (0.4 + (_random.NextDouble() * 0.3));
+                buoy.CurrentEfficiency = (int)(buoy.BaseEfficiency * (0.5 + (_random.NextDouble() * 0.3)));
 
-                var efficiencyVariation = _random.Next(-5, 2); // More negative variation
-                buoy.CurrentEfficiency = Math.Clamp(buoy.BaseEfficiency + efficiencyVariation, 60, 85);
+                // 5% chance to return to normal
+                if (_random.Next(0, 20) == 0)
+                {
+                    //buoy.Status = BuoyStatus.Active;
+                }
             }
-            else if (buoy.Status == BuoyStatus.Maintenance)
-            {
-                buoy.CurrentEnergy = 0;
-                buoy.CurrentEfficiency = 0;
-                buoy.WaveHeight = 0;
-            }
+
+            // Update the item in the observable collection
+            Buoys[i] = buoy;
         }
-    }
 
-    private void UpdateBuoyCards()
-    {
-        // In a real MVVM implementation, this would update bound properties
-        // For demonstration, the XAML shows static realistic values
-        // You could implement INotifyPropertyChanged and bind the values
+        // Update the total system energy based on buoy performance
+        _baseTotalEnergy = _buoys.Where(b => b.Status == BuoyStatus.Active || b.Status == BuoyStatus.Warning)
+                                .Sum(b => b.CurrentEnergy);
+        _basePowerOutput = _baseTotalEnergy * 0.075; // Rough conversion to kW
+
+        // Update the fleet status summary
+        var activeCount = Buoys.Count(b => b.Status == BuoyStatus.Active);
+        var warningCount = Buoys.Count(b => b.Status == BuoyStatus.Warning);
+        var maintenanceCount = Buoys.Count(b => b.Status == BuoyStatus.Maintenance);
+        FleetStatusSummary = $"✅ {activeCount} Active | ⚠️ {warningCount} Warning | 🔧 {maintenanceCount} Maintenance";
+
+        // Notify UI that base values changed
+        OnPropertyChanged(nameof(TotalEnergy));
+        OnPropertyChanged(nameof(CurrentPower));
+        OnPropertyChanged(nameof(FleetStatusSummary));
     }
 
     private void UpdateAIRecommendations()
@@ -333,17 +491,31 @@ public partial class DashboardPage : ContentPage
     }
 
     private void UpdatePerformanceChart()
+{
+    for (int i = 0; i < ChartBars.Count; i++)
     {
-        // Generate new weekly performance data
-        var weeklyData = new List<double>();
-        for (int i = 0; i < 7; i++)
-        {
-            var baseValue = 200 + (_random.NextDouble() - 0.5) * 60; // 170-230 kWh range
-            weeklyData.Add(Math.Max(120, baseValue));
-        }
+        // Apply small fluctuations (±5-15 kWh)
+        var fluctuation = (_random.NextDouble() - 0.5) * 30;
+        var newValue = Math.Max(120, ChartBars[i].Value + fluctuation);
+        
+        // Direct assignment to trigger property change
+        ChartBars[i].Value = newValue;
+    }
 
-        // In a real implementation, this would update the chart bars
-        // The XAML currently shows static values for demonstration
+    // Update the weekly total display
+    var total = ChartBars.Sum(b => b.Value);
+    WeeklyTotalText = $"📈 Weekly Total: {total:F0} kWh | Average: {total/7:F0} kWh/day";
+}
+
+    private string _weeklyTotalText;
+    public string WeeklyTotalText
+    {
+        get => _weeklyTotalText;
+        set
+        {
+            _weeklyTotalText = value;
+            OnPropertyChanged();
+        }
     }
 
     private void UpdateSystemStatus()
@@ -430,17 +602,90 @@ public partial class DashboardPage : ContentPage
 }
 
 // Enhanced Data Models
-public class BuoyData
+public class BuoyData : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private double _currentEnergy;
+    private int _currentEfficiency;
+    private double _waveHeight;
+    private BuoyStatus _status;
+
     public string Id { get; set; }
     public string Name { get; set; }
-    public BuoyStatus Status { get; set; }
+
+    public BuoyStatus Status
+    {
+        get => _status;
+        set
+        {
+            if (_status != value)
+            {
+                _status = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(StatusSymbol));
+            }
+        }
+    }
+
+    public string StatusSymbol => Status switch
+    {
+        BuoyStatus.Active => "🟢",
+        BuoyStatus.Warning => "🟡",
+        BuoyStatus.Maintenance => "🔴",
+        BuoyStatus.Offline => "⚫",
+        _ => "⚪"
+    };
+
     public double BaseEnergy { get; set; }
-    public double CurrentEnergy { get; set; }
+
+    public double CurrentEnergy
+    {
+        get => _currentEnergy;
+        set
+        {
+            if (_currentEnergy != value)
+            {
+                _currentEnergy = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public int BaseEfficiency { get; set; }
-    public int CurrentEfficiency { get; set; }
-    public double WaveHeight { get; set; }
+
+    public int CurrentEfficiency
+    {
+        get => _currentEfficiency;
+        set
+        {
+            if (_currentEfficiency != value)
+            {
+                _currentEfficiency = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(EfficiencyStatus));
+            }
+        }
+    }
+
+    public double WaveHeight
+    {
+        get => _waveHeight;
+        set
+        {
+            if (_waveHeight != value)
+            {
+                _waveHeight = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(EfficiencyStatus));
+            }
+        }
+    }
+
+    //public string EfficiencyStatus => $"Efficiency: {CurrentEfficiency}% | 🌊 Wave: {WaveHeight:0.0}m";
+
     public DateTime LastMaintenance { get; set; }
+
     public List<string> Sensors { get; set; } = new List<string>
     {
         "Wave Height Sensor",
@@ -449,6 +694,65 @@ public class BuoyData
         "Communication Module",
         "Battery Monitor"
     };
+
+    public string StatusColor => Status switch
+    {
+        BuoyStatus.Active => "#00FF88", // AccentGreen
+        BuoyStatus.Warning => "#FF6B35", // WarningOrange
+        BuoyStatus.Maintenance => "#FF3B30", // DangerRed
+        _ => "#8E9AAF" // TextSecondary
+    };
+
+    public string StatusDetailColor => Status switch
+    {
+        BuoyStatus.Active => "#8E9AAF", // TextSecondary
+        BuoyStatus.Warning => "#FF6B35", // WarningOrange
+        BuoyStatus.Maintenance => "#FF6B35", // WarningOrange
+        _ => "#8E9AAF" // TextSecondary
+    };
+
+    public string EfficiencyStatus => Status switch
+    {
+        BuoyStatus.Maintenance => "🔧 Scheduled Maintenance",
+        BuoyStatus.Warning => $"Efficiency: {CurrentEfficiency}% | ⚠️ Check sensors",
+        _ => $"Efficiency: {CurrentEfficiency}% | 🌊 Wave: {WaveHeight:F1}m"
+    };
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public class ChartBarData : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private double _height;
+
+    public string Day { get; set; }
+    public string Color { get; set; }
+    private double _value;
+    public double Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ValueText));
+            OnPropertyChanged(nameof(Height)); // Add this line
+        }
+    }
+
+    public double Height => Value / 2.5; // Adjust this factor to control bar height scaling
+
+    public string ValueText => Value.ToString("F0");
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
 
 public class AIRecommendation
