@@ -475,8 +475,11 @@
             <!-- System Status & Alerts -->
             <Frame Grid.Row="5" Style="{StaticResource CardStyle}">
                 <StackLayout>
-                    <Label Text="🛡️ System Status and Alerts" Style="{StaticResource TitleStyle}" Margin="0,0,0,15"/>
-                    <StackLayout Spacing="10">
+                    <Grid Margin="0,0,0,15">
+                        <Label Text="🛡️ System Status and Alerts" Style="{StaticResource TitleStyle}" HorizontalOptions="Start" Grid.Row="0" />
+                    </Grid>
+                    
+                    <StackLayout Spacing="12">
 
                         <Grid>
                             <Ellipse Fill="{StaticResource AccentGreen}" WidthRequest="8" HeightRequest="8" HorizontalOptions="Start" VerticalOptions="Center"/>
