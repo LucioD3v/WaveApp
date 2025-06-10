@@ -1,49 +1,182 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maui="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
              x:Class="WaveApp.Views.ProfilePage"
-             BackgroundColor="#F5F5F5">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <!-- Avatar Section -->
-            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" HorizontalOptions="Center" 
-                         WidthRequest="150" HeightRequest="150">
-                <Grid>
-                    <Image x:Name="ProfilePicture" WidthRequest="150" HeightRequest="150" Aspect="AspectFill" 
-                           Source="default_profile_picture.png" />
-                    <ImageButton Source="edit_icon.png" WidthRequest="30" HeightRequest="30" 
-                                 BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="End" 
-                                 Margin="5" Clicked="OnEditPhotoClicked" />
-                </Grid>
-            </maui:Border>
+             xmlns:converters="clr-namespace:WaveApp.Converters"
+             BackgroundColor="#0A0E1A"
+             Title="User Profile">
 
-            <!-- Name and Bio Section -->
-            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" Padding="10">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Name" FontSize="18" TextColor="#333" />
-                    <Entry x:Name="NameEntry" Placeholder="Enter your name" FontSize="16" TextColor="Black"/>
-                    <Label Text="Bio" FontSize="18" TextColor="#333" />
-                    <Editor x:Name="BioEditor" Placeholder="Write something about yourself" FontSize="16" TextColor="Black" />
-                </VerticalStackLayout>
-            </maui:Border>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Reuse the same color definitions from Dashboard -->
+            <Color x:Key="PrimaryBlue">#00D4FF</Color>
+            <Color x:Key="SecondaryBlue">#0099CC</Color>
+            <Color x:Key="AccentGreen">#00FF88</Color>
+            <Color x:Key="WarningOrange">#FF6B35</Color>
+            <Color x:Key="DangerRed">#FF3B30</Color>
+            <Color x:Key="DarkBackground">#0A0E1A</Color>
+            <Color x:Key="CardBackground">#1A1F2E</Color>
+            <Color x:Key="TextPrimary">#FFFFFF</Color>
+            <Color x:Key="TextSecondary">#8E9AAF</Color>
+
+            <!-- Gradients -->
+            <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#00D4FF" Offset="0"/>
+                <GradientStop Color="#0099CC" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1A1F2E" Offset="0"/>
+                <GradientStop Color="#242B3D" Offset="1"/>
+            </LinearGradientBrush>
+
+            <!-- Styles -->
+            <Style x:Key="CardStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+                <Setter Property="HasShadow" Value="True"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
+
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="SectionTitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+
+            <Style x:Key="EntryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="PlaceholderColor" Value="#8E9AAF"/>
+                <Setter Property="BackgroundColor" Value="#1A1F2E"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="HeightRequest" Value="45"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <Style x:Key="EditorStyle" TargetType="Editor">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="PlaceholderColor" Value="#8E9AAF"/>
+                <Setter Property="BackgroundColor" Value="#1A1F2E"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="HeightRequest" Value="100"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <Style x:Key="SaveButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource PrimaryGradient}"/>
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="Margin" Value="0,20"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid Padding="16" RowSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Section -->
+            <Frame Grid.Row="0" Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryGradient}">
+                <StackLayout>
+                    <Label Text="👤 User Profile" 
+                           Style="{StaticResource TitleStyle}" 
+                           FontSize="26" 
+                           TextColor="White"/>
+                    <Label Text="Manage your account settings" 
+                           Style="{StaticResource SubtitleStyle}" 
+                           TextColor="White" 
+                           FontSize="15"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Profile Picture Section -->
+            <Frame Grid.Row="1" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Label Text="Profile Picture" Style="{StaticResource SectionTitleStyle}"/>
+                    <Grid HorizontalOptions="Center">
+                        <maui:Border StrokeThickness="0" Stroke="Transparent" 
+                                   BackgroundColor="Transparent" 
+                                   HorizontalOptions="Center"
+                                   WidthRequest="120" HeightRequest="120">
+                            <Image x:Name="ProfilePicture" 
+                                   WidthRequest="120" HeightRequest="120" 
+                                   Aspect="AspectFill" 
+                                   Source="default_profile_picture.png" />
+                        </maui:Border>
+                        <Button ImageSource="edit_icon.png" 
+                                WidthRequest="40" HeightRequest="40" 
+                                BackgroundColor="{StaticResource PrimaryBlue}"
+                                CornerRadius="20"
+                                HorizontalOptions="End" VerticalOptions="End" 
+                                Margin="0,-20,0,0"
+                                Clicked="OnEditPhotoClicked" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Personal Information Section -->
+            <Frame Grid.Row="2" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Label Text="Personal Information" Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Label Text="Name" TextColor="{StaticResource TextPrimary}" FontSize="14"/>
+                    <Entry x:Name="NameEntry" 
+                           Placeholder="Enter your name" 
+                           Style="{StaticResource EntryStyle}"/>
+
+                    <Label Text="Bio" TextColor="{StaticResource TextPrimary}" FontSize="14" Margin="0,10,0,0"/>
+                    <Editor x:Name="BioEditor" 
+                            Placeholder="Write something about yourself" 
+                            Style="{StaticResource EditorStyle}"/>
+                </StackLayout>
+            </Frame>
 
             <!-- Contact Information Section -->
-            <maui:Border StrokeThickness="0" Stroke="Transparent" BackgroundColor="White" Padding="10">
-                <VerticalStackLayout Spacing="10">
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
-                        <Image Source="email_icon.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" />
-                        <Entry x:Name="EmailEntry" Placeholder="Enter your email" FontSize="16" Grid.Column="1" TextColor="Black" />
-                    </Grid>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
-                        <Image Source="phone_icon.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" />
-                        <Entry x:Name="PhoneEntry" Placeholder="Enter your phone number" FontSize="16" Grid.Column="1" TextColor="Black" />
-                    </Grid>
-                </VerticalStackLayout>
-            </maui:Border>
+            <Frame Grid.Row="3" Style="{StaticResource CardStyle}">
+                <StackLayout>
+                    <Label Text="Contact Information" Style="{StaticResource SectionTitleStyle}"/>
 
-            <!-- Edit/Save Button -->
-            <Button Text="Save Changes" FontSize="18" BackgroundColor="#007AFF" TextColor="White" CornerRadius="10" 
-                    HorizontalOptions="Center" Clicked="OnSaveChangesClicked" />
-        </VerticalStackLayout>
+                    <Grid ColumnDefinitions="24,*" RowDefinitions="Auto" ColumnSpacing="10">
+                        <Image Source="email_icon.png" 
+                               WidthRequest="24" HeightRequest="24" 
+                               VerticalOptions="Center"/>
+                        <Entry x:Name="EmailEntry" 
+                               Placeholder="Enter your email" 
+                               Style="{StaticResource EntryStyle}"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="24,*" RowDefinitions="Auto" ColumnSpacing="10" Margin="0,10,0,0">
+                        <Image Source="phone_icon.png" 
+                               WidthRequest="24" HeightRequest="24" 
+                               VerticalOptions="Center"/>
+                        <Entry x:Name="PhoneEntry" 
+                               Placeholder="Enter your phone number" 
+                               Style="{StaticResource EntryStyle}"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <Button Text="SAVE CHANGES" 
+                            Style="{StaticResource SaveButtonStyle}"
+                            Clicked="OnSaveChangesClicked"/>
+                </StackLayout>
+            </Frame>
+        </Grid>
     </ScrollView>
 </ContentPage>

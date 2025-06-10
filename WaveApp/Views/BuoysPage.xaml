@@ -2,49 +2,165 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaveApp.Views.BuoysPage"
-             >
-    
-    <StackLayout Padding="10">
-        <Label Text="Buoys Overview" 
-               FontSize="20" 
-               HorizontalOptions="Center" 
-               Margin="0,10,0,10" />
-        <CollectionView ItemsSource="{Binding Buoys}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Padding="10" CornerRadius="10" BorderColor="LightGray" Margin="5" BackgroundColor="White">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
-                            <!-- Status Indicator -->
-                            <BoxView Grid.Row="0" Grid.Column="0" WidthRequest="20" HeightRequest="20" CornerRadius="10" 
-                                     BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" 
-                                     VerticalOptions="Center" HorizontalOptions="Center" />
-                            
-                            <!-- Name -->
-                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                            
-                            <!-- Description -->
-                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Description}" FontSize="14" TextColor="Gray" />
-                            
-                            <!-- Energy -->
-                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding CurrentEnergy, StringFormat='Energy: {0:F2} kW'}" FontSize="14" />
-                            
-                            <!-- Location -->
-                            <Label Grid.Row="3" Grid.Column="1" Text="{Binding Location}" FontSize="14" TextColor="Gray" />
-                            
-                            <!-- Last Update -->
-                            <Label Grid.Row="3" Grid.Column="2" Text="{Binding LastUpdate, StringFormat='Updated: {0:MM/dd/yyyy HH:mm}'}" FontSize="12" TextColor="Gray" HorizontalOptions="End" />
-                            
-                            <!-- Battery Indicator -->
-                            <Image Grid.Row="0" Grid.Column="2" Source="{Binding BatteryLevel, Converter={StaticResource BatteryIconConverter}}" 
-                                   WidthRequest="20" HeightRequest="20" HorizontalOptions="End" VerticalOptions="Center" />
-                            
-                            <!-- Action Button -->
-                            <Button Grid.Row="4" Grid.ColumnSpan="3" Text="View Details" Command="{Binding ViewDetailsCommand}" 
-                                    BackgroundColor="LightBlue" TextColor="White" CornerRadius="5" />
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </StackLayout>
+             xmlns:converters="clr-namespace:WaveApp.Converters"
+             BackgroundColor="#0A0E1A"
+             Title="Buoy Fleet">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Reuse the same color definitions from Dashboard -->
+            <Color x:Key="PrimaryBlue">#00D4FF</Color>
+            <Color x:Key="SecondaryBlue">#0099CC</Color>
+            <Color x:Key="AccentGreen">#00FF88</Color>
+            <Color x:Key="WarningOrange">#FF6B35</Color>
+            <Color x:Key="DangerRed">#FF3B30</Color>
+            <Color x:Key="DarkBackground">#0A0E1A</Color>
+            <Color x:Key="CardBackground">#1A1F2E</Color>
+            <Color x:Key="TextPrimary">#FFFFFF</Color>
+            <Color x:Key="TextSecondary">#8E9AAF</Color>
+
+            <!-- Gradients -->
+            <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#00D4FF" Offset="0"/>
+                <GradientStop Color="#0099CC" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1A1F2E" Offset="0"/>
+                <GradientStop Color="#242B3D" Offset="1"/>
+            </LinearGradientBrush>
+
+            <!-- Styles -->
+            <Style x:Key="CardStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+                <Setter Property="HasShadow" Value="True"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
+
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="SubtitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <Style x:Key="BuoyCardStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="12"/>
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="HasShadow" Value="True"/>
+            </Style>
+
+            <Style x:Key="BuoyButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource PrimaryGradient}"/>
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="HeightRequest" Value="35"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid Padding="16" RowSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Section -->
+            <Frame Grid.Row="0" Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryGradient}">
+                <StackLayout>
+                    <Label Text="🌊 Buoy Fleet Overview" 
+                           Style="{StaticResource TitleStyle}" 
+                           FontSize="26" 
+                           TextColor="White"/>
+                    <Label Text="{Binding FleetStatusSummary}" 
+                           Style="{StaticResource SubtitleStyle}" 
+                           TextColor="White" 
+                           FontSize="15"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Buoys List -->
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Buoys}">
+                <CollectionView.Header>
+                    <Label Text="Active Buoys" 
+                           Style="{StaticResource TitleStyle}" 
+                           Margin="10"/>
+                </CollectionView.Header>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource BuoyCardStyle}">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                  ColumnDefinitions="Auto,*,Auto"
+                                  RowSpacing="5">
+                                  
+                                <!-- Status Indicator -->
+                                <BoxView Grid.Row="0" Grid.Column="0" 
+                                         WidthRequest="12" HeightRequest="12" 
+                                         CornerRadius="6" Margin="0,0,5,0"
+                                         VerticalOptions="Center" 
+                                         BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
+                                
+                                <!-- Name -->
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding Name}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="16"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                                
+                                <!-- Battery Indicator -->
+                                <Image Grid.Row="0" Grid.Column="2" 
+                                       Source="{Binding BatteryLevel, Converter={StaticResource BatteryIconConverter}}" 
+                                       WidthRequest="20" HeightRequest="20" 
+                                       HorizontalOptions="End" VerticalOptions="Center" />
+                                
+                                <!-- Description -->
+                                <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                       Text="{Binding Description}" 
+                                       FontSize="14" 
+                                       TextColor="{StaticResource TextSecondary}"/>
+                                
+                                <!-- Energy -->
+                                <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                                       Text="{Binding CurrentEnergy, StringFormat='⚡ Energy: {0:F2} kW'}" 
+                                       FontSize="14"
+                                       TextColor="{StaticResource AccentGreen}"/>
+                                
+                                <!-- Location -->
+                                <Label Grid.Row="3" Grid.Column="1" 
+                                       Text="{Binding Location}" 
+                                       FontSize="14" 
+                                       TextColor="{StaticResource TextSecondary}"/>
+                                
+                                <!-- Last Update -->
+                                <Label Grid.Row="3" Grid.Column="2" 
+                                       Text="{Binding LastUpdate, StringFormat='🕒 {0:MM/dd HH:mm}'}" 
+                                       FontSize="12" 
+                                       TextColor="{StaticResource TextSecondary}" 
+                                       HorizontalOptions="End" />
+                                
+                                <!-- Action Button -->
+                                <Button Grid.Row="4" Grid.ColumnSpan="3" 
+                                        Text="VIEW DETAILS" 
+                                        Command="{Binding ViewDetailsCommand}" 
+                                        Style="{StaticResource BuoyButtonStyle}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ScrollView>
 </ContentPage>
