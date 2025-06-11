@@ -67,7 +67,7 @@
 
             <Style x:Key="SubtitleStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontSize" Value="16"/>
             </Style>
 
             <Style x:Key="BuoyCardStyle" TargetType="Frame">
@@ -77,26 +77,13 @@
                 <Setter Property="Margin" Value="4"/>
                 <Setter Property="HasShadow" Value="True"/>
             </Style>
-
-            <!-- Animations -->
-            <!--
-            <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                               From="0.7" To="1.0" Duration="0:0:2"
-                               AutoReverse="True"/>
-            </Storyboard>
-
-            <Storyboard x:Key="SlideInAnimation">
-                <DoubleAnimation Storyboard.TargetProperty="TranslationX"
-                               From="300" To="0" Duration="0:0:1"/>
-            </Storyboard>
-            -->
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ScrollView>
         <Grid Padding="16" RowSpacing="20">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -174,7 +161,7 @@
                                     <Label Text="{Binding Buoys[0].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[0].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[0].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[0].EfficiencyStatus}" TextColor="{Binding Buoys[0].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[0].EfficiencyStatus}" TextColor="{Binding Buoys[0].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
 
@@ -186,7 +173,7 @@
                                     <Label Text="{Binding Buoys[1].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[1].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[1].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[1].EfficiencyStatus}" TextColor="{Binding Buoys[1].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[1].EfficiencyStatus}" TextColor="{Binding Buoys[1].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
 
@@ -198,7 +185,7 @@
                                     <Label Text="{Binding Buoys[2].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[2].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[2].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[2].EfficiencyStatus}" TextColor="{Binding Buoys[2].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[2].EfficiencyStatus}" TextColor="{Binding Buoys[2].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
 
@@ -211,7 +198,7 @@
                                     <Label Text="{Binding Buoys[3].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[3].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[3].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[3].EfficiencyStatus}" TextColor="{Binding Buoys[3].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[3].EfficiencyStatus}" TextColor="{Binding Buoys[3].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
 
@@ -223,7 +210,7 @@
                                     <Label Text="{Binding Buoys[4].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[4].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[4].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[4].EfficiencyStatus}" TextColor="{Binding Buoys[4].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[4].EfficiencyStatus}" TextColor="{Binding Buoys[4].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
 
@@ -235,245 +222,271 @@
                                     <Label Text="{Binding Buoys[5].StatusSymbol}" FontSize="16" HorizontalOptions="End"/>
                                 </Grid>
                                 <Label Text="{Binding Buoys[5].CurrentEnergy, StringFormat='{0:F1} kWh'}" TextColor="{Binding Buoys[5].StatusColor}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Buoys[5].EfficiencyStatus}" TextColor="{Binding Buoys[5].StatusDetailColor}" FontSize="12"/>
+                                <Label Text="{Binding Buoys[5].EfficiencyStatus}" TextColor="{Binding Buoys[5].StatusDetailColor}" FontSize="14"/>
                             </StackLayout>
                         </Frame>
                     </Grid>
                 </StackLayout>
             </Frame>
 
-            <!-- Performance Analytics Chart -->
+            <!-- Horizontal Row Container -->
             <Frame Grid.Row="3" Style="{StaticResource CardStyle}">
-                <StackLayout>
-                    <Label Text="📊 Performance Analytics (7 Days)" Style="{StaticResource TitleStyle}" Margin="0,0,0,15"/>
-                    <Grid HeightRequest="140" BackgroundColor="#0F1419" Margin="0,10" Padding="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <Grid Margin="0,0,0,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Fleet Map View-->
+                    <Frame Style="{StaticResource CardStyle}" Grid.Row="0" Grid.Column="1">
+                        <StackLayout>
+                            <Label Text="📍Fleet Distribution Live Map" Style="{StaticResource TitleStyle}" HorizontalOptions="Start" />
+                        </StackLayout>
+                    </Frame>
 
-                        <!-- Monday (Column 0) -->
-                        <StackLayout Grid.Column="0" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[0].Color, Converter={StaticResource ColorConverter}}"
+                    <!-- Performace and Ai Optimization Views -->
+                    <StackLayout Grid.Row="0" Grid.Column="0">
+                        
+                        <!-- Performance Analytics Chart -->
+                        <Frame Style="{StaticResource CardStyle}">
+                            <StackLayout>
+                                <Label Text="📊 Performance Analytics (7 Days)" Style="{StaticResource TitleStyle}" Margin="0,0,0,15"/>
+                                <Grid HeightRequest="140" BackgroundColor="#0F1419" Margin="0,10" Padding="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Monday (Column 0) -->
+                                    <StackLayout Grid.Column="0" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[0].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[0].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[0].Day}" 
+                                        <Label Text="{Binding ChartBars[0].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[0].ValueText}" 
+                                        <Label Text="{Binding ChartBars[0].ValueText}" 
                        TextColor="{Binding ChartBars[0].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Tuesday (Column 1) -->
-                        <StackLayout Grid.Column="1" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[1].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Tuesday (Column 1) -->
+                                    <StackLayout Grid.Column="1" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[1].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[1].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[1].Day}" 
+                                        <Label Text="{Binding ChartBars[1].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[1].ValueText}" 
+                                        <Label Text="{Binding ChartBars[1].ValueText}" 
                        TextColor="{Binding ChartBars[1].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Wednesday (Column 2) -->
-                        <StackLayout Grid.Column="2" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[2].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Wednesday (Column 2) -->
+                                    <StackLayout Grid.Column="2" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[2].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[2].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[2].Day}" 
+                                        <Label Text="{Binding ChartBars[2].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[2].ValueText}" 
+                                        <Label Text="{Binding ChartBars[2].ValueText}" 
                        TextColor="{Binding ChartBars[2].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Thursday (Column 3) -->
-                        <StackLayout Grid.Column="3" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[3].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Thursday (Column 3) -->
+                                    <StackLayout Grid.Column="3" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[3].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[3].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[3].Day}" 
+                                        <Label Text="{Binding ChartBars[3].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[3].ValueText}" 
+                                        <Label Text="{Binding ChartBars[3].ValueText}" 
                        TextColor="{Binding ChartBars[3].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Friday (Column 4) -->
-                        <StackLayout Grid.Column="4" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[4].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Friday (Column 4) -->
+                                    <StackLayout Grid.Column="4" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[4].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[4].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[4].Day}" 
+                                        <Label Text="{Binding ChartBars[4].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[4].ValueText}" 
+                                        <Label Text="{Binding ChartBars[4].ValueText}" 
                        TextColor="{Binding ChartBars[4].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Saturday (Column 5) -->
-                        <StackLayout Grid.Column="5" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[5].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Saturday (Column 5) -->
+                                    <StackLayout Grid.Column="5" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[5].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[5].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[5].Day}" 
+                                        <Label Text="{Binding ChartBars[5].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[5].ValueText}" 
+                                        <Label Text="{Binding ChartBars[5].ValueText}" 
                        TextColor="{Binding ChartBars[5].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
+                                    </StackLayout>
 
-                        <!-- Sunday (Column 6) -->
-                        <StackLayout Grid.Column="6" VerticalOptions="End" HeightRequest="120">
-                            <BoxView BackgroundColor="{Binding ChartBars[6].Color, Converter={StaticResource ColorConverter}}"
+                                    <!-- Sunday (Column 6) -->
+                                    <StackLayout Grid.Column="6" VerticalOptions="End" HeightRequest="120">
+                                        <BoxView BackgroundColor="{Binding ChartBars[6].Color, Converter={StaticResource ColorConverter}}"
                          HeightRequest="{Binding ChartBars[6].Height}"
                          VerticalOptions="End"
                          Margin="2" 
                          CornerRadius="2"/>
-                            <Label Text="{Binding ChartBars[6].Day}" 
+                                        <Label Text="{Binding ChartBars[6].Day}" 
                        TextColor="{StaticResource TextSecondary}" 
                        FontSize="10" 
                        HorizontalTextAlignment="Center"/>
-                            <Label Text="{Binding ChartBars[6].ValueText}" 
+                                        <Label Text="{Binding ChartBars[6].ValueText}" 
                        TextColor="{Binding ChartBars[6].Color, Converter={StaticResource ColorConverter}}"
                        FontSize="10" 
                        HorizontalTextAlignment="Center" 
                        FontAttributes="Bold"/>
-                        </StackLayout>
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Label Text="{Binding WeeklyTotalText}" 
+                                    </StackLayout>
+                                </Grid>
+                                <Grid Margin="0,10,0,0">
+                                    <Label Text="{Binding WeeklyTotalText}" 
                    Style="{StaticResource SubtitleStyle}" 
                    HorizontalTextAlignment="Center" 
                    TextColor="{StaticResource AccentGreen}"/>
-                    </Grid>
-                </StackLayout>
-            </Frame>
-
-            <!-- AI Optimization Recommendations -->
-            <Frame Grid.Row="4" Style="{StaticResource CardStyle}" Background="{StaticResource AICardGradient}">
-                <StackLayout>
-                    <Grid Margin="0,0,0,15">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Label Text="🤖 AI Optimization Center" Style="{StaticResource TitleStyle}" HorizontalOptions="Start" Grid.Row="0" />
-                        <Label Text="🧠 6 Active Insights ..." Style="{StaticResource SubtitleStyle}" TextColor="{StaticResource PrimaryBlue}" Grid.Row="0" Margin="0,30,0,0" />
-                        <Button Text="More" Grid.Row="0" Grid.Column="1" WidthRequest="40" HeightRequest="15" Padding="5" FontSize="10" BackgroundColor="{StaticResource PrimaryBlue}" TextColor="Black" FontAttributes="Bold" TextTransform="Uppercase" Clicked="OnToggleClicked" />
-                    </Grid>
-
-                    <StackLayout Spacing="12" IsVisible="{Binding ShowStack1}">
-                        <!-- AI Recommendation 1 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource PrimaryBlue}">
-                            <StackLayout>
-                                <Label Text="🎯 Positioning Optimization" TextColor="{StaticResource PrimaryBlue}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Wave conditions in Zone A show 18% higher energy potential. Consider repositioning Buoy Beta for optimal capture." 
-                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="💡 Potential gain: +6.8 kWh/day" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                                </Grid>
                             </StackLayout>
                         </Frame>
 
-                        <!-- AI Recommendation 2 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource AccentGreen}">
+                        <!-- AI Optimization Recommendations -->
+                        <Frame Style="{StaticResource CardStyle}" Background="{StaticResource AICardGradient}">
                             <StackLayout>
-                                <Label Text="🔧 Predictive Maintenance" TextColor="{StaticResource AccentGreen}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Buoy Foxtrot shows declining efficiency. Sensor calibration recommended within 72 hours to prevent 15% energy loss." 
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="90*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="🤖 AI Optimization Center" Style="{StaticResource TitleStyle}" HorizontalOptions="Start" Grid.Row="0" />
+                                    <Label Text="🧠 6 Active Insights ..." Style="{StaticResource SubtitleStyle}" TextColor="{StaticResource PrimaryBlue}" Grid.Row="0" Margin="0,30,0,0" />
+                                    <Button Text="More" Grid.Row="0" Grid.Column="1" WidthRequest="40" HeightRequest="15" Padding="5" FontSize="10" BackgroundColor="{StaticResource PrimaryBlue}" TextColor="Black" FontAttributes="Bold" TextTransform="Uppercase" Clicked="OnToggleClicked" />
+                                </Grid>
+
+                                <StackLayout Spacing="12" IsVisible="{Binding ShowStack1}">
+                                    <!-- AI Recommendation 1 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource PrimaryBlue}">
+                                        <StackLayout>
+                                            <Label Text="🎯 Positioning Optimization" TextColor="{StaticResource PrimaryBlue}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Wave conditions in Zone A show 18% higher energy potential. Consider repositioning Buoy Beta for optimal capture." 
                                        TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="⏰ Schedule maintenance: High priority" TextColor="{StaticResource WarningOrange}" FontSize="12" FontAttributes="Bold"/>
+                                            <Label Text="💡 Potential gain: +6.8 kWh/day" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+
+                                    <!-- AI Recommendation 2 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource AccentGreen}">
+                                        <StackLayout>
+                                            <Label Text="🔧 Predictive Maintenance" TextColor="{StaticResource AccentGreen}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Buoy Foxtrot shows declining efficiency. Sensor calibration recommended within 72 hours to prevent 15% energy loss." 
+                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                            <Label Text="⏰ Schedule maintenance: High priority" TextColor="{StaticResource WarningOrange}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+
+                                    <!-- AI Recommendation 3 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource WarningOrange}">
+                                        <StackLayout>
+                                            <Label Text="🌊 Weather Optimization" TextColor="{StaticResource WarningOrange}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Storm system approaching in 48 hours. High wave activity predicted - adjust safety protocols and expect 25% energy increase." 
+                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                            <Label Text="⚡ Expected boost: +45 kWh over 3 days" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+                                </StackLayout>
+
+                                <StackLayout Spacing="12" IsVisible="{Binding ShowStack2}">
+                                    <!-- AI Recommendation 4 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource PrimaryBlue}">
+                                        <StackLayout>
+                                            <Label Text="🌡️ Thermal Efficiency Alert" TextColor="{StaticResource PrimaryBlue}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Ocean temperature rising 2.3°C above seasonal average. Adjust buoy depth settings to maximize thermal gradient energy capture." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                            <Label Text="🔥 Efficiency boost: +12.4 kWh/day" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+
+                                    <!-- AI Recommendation 5 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource AccentGreen}">
+                                        <StackLayout>
+                                            <Label Text="🤖 AI Learning Optimization" TextColor="{StaticResource AccentGreen}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Pattern analysis reveals optimal wave frequency at 0.08 Hz. Recalibrate Buoy Delta's resonance tuning for 22% efficiency improvement." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                            <Label Text="📊 Learning confidence: 94.2%" TextColor="{StaticResource PrimaryBlue}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+
+                                    <!-- AI Recommendation 6 -->
+                                    <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource WarningOrange}">
+                                        <StackLayout>
+                                            <Label Text="🐟 Marine Life Impact" TextColor="{StaticResource WarningOrange}" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="Increased marine activity detected around Buoy Charlie. Implement bio-friendly mode to reduce noise while maintaining 85% energy output." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
+                                            <Label Text="🌿 Eco-balance maintained: -15% noise, -15% output" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Frame>
+                                </StackLayout>
                             </StackLayout>
                         </Frame>
 
-                        <!-- AI Recommendation 3 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource WarningOrange}">
-                            <StackLayout>
-                                <Label Text="🌊 Weather Optimization" TextColor="{StaticResource WarningOrange}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Storm system approaching in 48 hours. High wave activity predicted - adjust safety protocols and expect 25% energy increase." 
-                                       TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="⚡ Expected boost: +45 kWh over 3 days" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
-                            </StackLayout>
-                        </Frame>
                     </StackLayout>
-
-                    <StackLayout Spacing="12" IsVisible="{Binding ShowStack2}">
-                        <!-- AI Recommendation 4 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource PrimaryBlue}">
-                            <StackLayout>
-                                <Label Text="🌡️ Thermal Efficiency Alert" TextColor="{StaticResource PrimaryBlue}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Ocean temperature rising 2.3°C above seasonal average. Adjust buoy depth settings to maximize thermal gradient energy capture." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="🔥 Efficiency boost: +12.4 kWh/day" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
-                            </StackLayout>
-                        </Frame>
-
-                        <!-- AI Recommendation 5 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource AccentGreen}">
-                            <StackLayout>
-                                <Label Text="🤖 AI Learning Optimization" TextColor="{StaticResource AccentGreen}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Pattern analysis reveals optimal wave frequency at 0.08 Hz. Recalibrate Buoy Delta's resonance tuning for 22% efficiency improvement." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="📊 Learning confidence: 94.2%" TextColor="{StaticResource PrimaryBlue}" FontSize="12" FontAttributes="Bold"/>
-                            </StackLayout>
-                        </Frame>
-
-                        <!-- AI Recommendation 6 -->
-                        <Frame BackgroundColor="#0F1923" CornerRadius="8" Padding="15" HasShadow="False" BorderColor="{StaticResource WarningOrange}">
-                            <StackLayout>
-                                <Label Text="🐟 Marine Life Impact" TextColor="{StaticResource WarningOrange}" FontSize="14" FontAttributes="Bold"/>
-                                <Label Text="Increased marine activity detected around Buoy Charlie. Implement bio-friendly mode to reduce noise while maintaining 85% energy output." TextColor="White" FontSize="13" LineBreakMode="WordWrap"/>
-                                <Label Text="🌿 Eco-balance maintained: -15% noise, -15% output" TextColor="{StaticResource AccentGreen}" FontSize="12" FontAttributes="Bold"/>
-                            </StackLayout>
-                        </Frame>
-                    </StackLayout>
-                </StackLayout>
+                </Grid>
             </Frame>
-
+            
             <!-- System Status & Alerts -->
-            <Frame Grid.Row="5" Style="{StaticResource CardStyle}">
+            <Frame Grid.Row="4" Style="{StaticResource CardStyle}">
                 <StackLayout>
                     <Grid Margin="0,0,0,15">
                         <Label Text="🛡️ System Status and Alerts" Style="{StaticResource TitleStyle}" HorizontalOptions="Start" Grid.Row="0" />
